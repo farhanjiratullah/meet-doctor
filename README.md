@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 # Meet Doctor
 Kelas Rekaman Bootcamp Fullstack Web Developer 2022
 =======
@@ -68,4 +67,3 @@ If you discover a security vulnerability within Laravel, please send an e-mail t
 ## License
 
 The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
->>>>>>> 5ea3a9b (Initialize Laravel project)
