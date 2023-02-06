@@ -18,8 +18,8 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', LandingController::class)->name('landing');
 Route::middleware('auth')->group(function() {
-    Route::get('/appointment', AppointmentController::class); 
-    Route::get('/payment', PaymentController::class); 
+    Route::get('/appointment', AppointmentController::class)->name('appointment'); 
+    Route::get('/payment', PaymentController::class)->name('payment'); 
 });
 
 Route::middleware([
