@@ -13,7 +13,7 @@ class UpdateConfigPaymentRequest extends FormRequest
      */
     public function authorize()
     {
-        return false;
+        return true;
     }
 
     /**
@@ -24,7 +24,8 @@ class UpdateConfigPaymentRequest extends FormRequest
     public function rules()
     {
         return [
-            //
+            'fee' => 'required|string|max:255',
+            'vat' => 'required|string|max:255'
         ];
     }
 }

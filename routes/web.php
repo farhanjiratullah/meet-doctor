@@ -1,5 +1,8 @@
 <?php
 
+use App\Http\Controllers\Frontsite\AppointmentController;
+use App\Http\Controllers\Frontsite\LandingController;
+use App\Http\Controllers\Frontsite\PaymentController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -13,12 +16,14 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
+Route::get('/', LandingController::class)->name('landing');
+Route::middleware('auth')->group(function() {
+    Route::get('/appointment', AppointmentController::class); 
+    Route::get('/payment', PaymentController::class); 
 });
 
 Route::middleware([
-    'auth:sanctum',
+    'auth',
     config('jetstream.auth_session'),
     'verified'
 ])->group(function () {
