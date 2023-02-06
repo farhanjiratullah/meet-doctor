@@ -3,6 +3,7 @@
 use App\Http\Controllers\Frontsite\AppointmentController;
 use App\Http\Controllers\Frontsite\LandingController;
 use App\Http\Controllers\Frontsite\PaymentController;
+use App\Http\Controllers\Backsite\DashboardController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -24,10 +25,6 @@ Route::middleware('auth')->group(function() {
 
 Route::middleware([
     'auth',
-    config('jetstream.auth_session'),
-    'verified'
-])->group(function () {
-    Route::get('/dashboard', function () {
-        return view('dashboard');
-    })->name('dashboard');
+])->prefix('backsite')->as('backsite.')->group(function () {
+    Route::get('/dashboard', DashboardController::class)->name('dashboard');
 });
