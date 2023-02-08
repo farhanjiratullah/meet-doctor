@@ -44,7 +44,7 @@ class SpecialistController extends Controller
      */
     public function store(StoreSpecialistRequest $request): RedirectResponse
     {
-        Specialist::create($request->validate());
+        Specialist::create($request->validated());
 
         alert()->success('Success', 'New Specialist has been created');
 
@@ -86,7 +86,7 @@ class SpecialistController extends Controller
      */
     public function update(UpdateSpecialistRequest $request, Specialist $specialist): RedirectResponse
     {
-        $specialist->update($request->validate());
+        $specialist->update($request->validated());
 
         alert('Success', 'Specialist updated successfully');
 

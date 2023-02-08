@@ -10,6 +10,7 @@ use App\Http\Requests\Doctor\StoreDoctorRequest;
 use App\Http\Requests\Doctor\UpdateDoctorRequest;
 use App\Models\Specialist;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Facades\Gate;
 
 class DoctorController extends Controller
 {
@@ -20,6 +21,8 @@ class DoctorController extends Controller
      */
     public function index(): View
     {
+        abort_if(Gate::denies('doctor_access'), 403);
+
         $doctors = Doctor::orderBy('created_at', 'desc')->get();
         $specialists = Specialist::pluck('name', 'id');
 
@@ -47,7 +50,7 @@ class DoctorController extends Controller
      */
     public function store(StoreDoctorRequest $request): RedirectResponse
     {
-        Doctor::create($request->validate());
+        Doctor::create($request->validated());
 
         alert()->success('Success', 'New Doctor has been created');
 
@@ -62,6 +65,8 @@ class DoctorController extends Controller
      */
     public function show(Doctor $doctor): View
     {
+        abort_if(Gate::denies('doctor_show'), 403);
+
         return view('pages.backsite.operationals.doctors.show', [
             'doctor' => $doctor
         ]);
@@ -75,6 +80,8 @@ class DoctorController extends Controller
      */
     public function edit(Doctor $doctor): View
     {
+        abort_if(Gate::denies('doctor_edit'), 403);
+
         $specialists = Specialist::pluck('name', 'id');
 
         return view('pages.backsite.operationals.doctors.edit', [
@@ -92,7 +99,7 @@ class DoctorController extends Controller
      */
     public function update(UpdateDoctorRequest $request, Doctor $doctor): RedirectResponse
     {
-        $doctor->update($request->validate());
+        $doctor->update($request->validated());
 
         alert('Success', 'Doctor updated successfully');
 
@@ -107,6 +114,8 @@ class DoctorController extends Controller
      */
     public function destroy(Doctor $doctor)
     {
+        abort_if(Gate::denies('doctor_delete'), 403);
+        
         $doctor->delete();
 
         alert('Success', 'Doctor deleted successfully');

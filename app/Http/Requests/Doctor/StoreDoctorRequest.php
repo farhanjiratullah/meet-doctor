@@ -3,6 +3,7 @@
 namespace App\Http\Requests\Doctor;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Facades\Gate;
 
 class StoreDoctorRequest extends FormRequest
 {
@@ -13,6 +14,8 @@ class StoreDoctorRequest extends FormRequest
      */
     public function authorize()
     {
+        abort_if(Gate::denies('doctor_create'), 403);
+
         return true;
     }
 
