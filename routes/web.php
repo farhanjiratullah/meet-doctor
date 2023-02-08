@@ -4,6 +4,8 @@ use App\Http\Controllers\Frontsite\AppointmentController;
 use App\Http\Controllers\Frontsite\LandingController;
 use App\Http\Controllers\Frontsite\PaymentController;
 use App\Http\Controllers\Backsite\DashboardController;
+use App\Http\Controllers\Backsite\TypeUserController;
+use App\Http\Controllers\Backsite\SpecialistController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -27,4 +29,7 @@ Route::middleware([
     'auth',
 ])->prefix('backsite')->as('backsite.')->group(function () {
     Route::get('/dashboard', DashboardController::class)->name('dashboard');
+    Route::get('/type-users', TypeUserController::class)->name('type-users');
+    Route::resource('/specialists', SpecialistController::class)->except('create');
+    Route::resource('/doctors', SpecialistController::class)->except('create');
 });
