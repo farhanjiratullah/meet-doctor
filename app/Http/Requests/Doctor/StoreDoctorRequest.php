@@ -3,7 +3,7 @@
 namespace App\Http\Requests\Doctor;
 
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Support\Facades\Gate;
+use Gate;
 
 class StoreDoctorRequest extends FormRequest
 {
@@ -30,7 +30,19 @@ class StoreDoctorRequest extends FormRequest
             'name' => 'required|string|max:255',
             'specialist_id' => 'required|exists:specialists,id',
             'fee' => 'required|string|max:255',
-            'photo' => 'required|string|max:255',
+            'photo' => 'nullable|mimes:jpeg,jpg,svg,png|max:10240',
         ];
     }
+
+    // protected function prepareForValidation() {
+    //     $this->merge([
+    //         'photo' => $this->hasFile('photo') ? $this->file('photo')->store('assets/doctors', 'public') : ''
+    //     ]);
+    // }
+
+    // protected function passedValidation() {
+    //     $this->replace([
+    //         'photo' => $this->hasFile('photo') ? $this->file('photo')->store('assets/doctors', 'public') : ''
+    //     ]);
+    // }
 }

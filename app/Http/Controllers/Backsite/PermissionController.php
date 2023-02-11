@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Permission;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
+use Gate;
 
 class PermissionController extends Controller
 {
@@ -16,9 +17,11 @@ class PermissionController extends Controller
      */
     public function index(): View
     {
+        abort_if(Gate::denies('permission_access'), 403);
+
         $permissions = Permission::orderBy('created_at', 'desc')->get();
 
-        return view('pages.backsite.management-accsesses.permissions.index', [
+        return view('pages.backsite.management-accesses.permissions.index', [
             'permissions' => $permissions
         ]);
     }

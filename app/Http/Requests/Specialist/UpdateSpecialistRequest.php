@@ -3,6 +3,8 @@
 namespace App\Http\Requests\Specialist;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Gate;
+use Illuminate\Validation\Rule;
 
 class UpdateSpecialistRequest extends FormRequest
 {
@@ -13,6 +15,8 @@ class UpdateSpecialistRequest extends FormRequest
      */
     public function authorize()
     {
+        abort_if(Gate::denies('specialist_edit'), 403);
+        
         return true;
     }
 
@@ -24,7 +28,12 @@ class UpdateSpecialistRequest extends FormRequest
     public function rules()
     {
         return [
-            'name' => 'required|string|max:255|unique:specialists,name,id',
+            'name' => [
+                'required',
+                'string',
+                'max:255',
+                Rule::unique('roles')->ignore($this->specialist)
+            ],
             'price' => 'required|string|max:255'
         ];
     }

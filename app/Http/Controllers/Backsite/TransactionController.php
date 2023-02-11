@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Transaction;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
+use Gate;
 
 class TransactionController extends Controller
 {
@@ -16,7 +17,11 @@ class TransactionController extends Controller
      */
     public function index(): View
     {
-        $transactions = Transaction::orderBy('created_at', 'desc')->get();
+        abort_if(Gate::denies('transaction_access'), 403);
+
+        $transactions = Transaction::with(['appointment' => [
+            'doctor', 'user', 
+        ]])->orderBy('created_at', 'desc')->get();
 
         return view('pages.backsite.operationals.transactions.index', [
             'transactions' => $transactions

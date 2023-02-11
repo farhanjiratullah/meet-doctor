@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 {{-- set title --}}
-@section('title', 'Specialists')
+@section('title', 'Users')
 
 @section('content')
 
@@ -28,13 +28,12 @@
             {{-- breadcumb --}}
             <div class="content-header row">
                 <div class="content-header-left col-md-6 col-12 mb-2 breadcrumb-new">
-                    <h3 class="content-header-title mb-0 d-inline-block">Specialists</h3>
+                    <h3 class="content-header-title mb-0 d-inline-block">Users</h3>
                     <div class="row breadcrumbs-top d-inline-block">
                         <div class="breadcrumb-wrapper col-12">
                             <ol class="breadcrumb">
-                                <li class="breadcrumb-item"><a href="{{ route('backsite.dashboard') }}">Dashboard</a>
-                                </li>
-                                <li class="breadcrumb-item active">Specialists</li>
+                                <li class="breadcrumb-item">Dashboard</li>
+                                <li class="breadcrumb-item active">Users</li>
                             </ol>
                         </div>
                     </div>
@@ -42,7 +41,7 @@
             </div>
 
             {{-- add card --}}
-            @can('specialist_create')
+            @can('user_create')
                 <div class="content-body">
                     <section id="add-home">
                         <div class="row">
@@ -66,9 +65,8 @@
                                     <div class="card-content collapse hide">
                                         <div class="card-body card-dashboard">
 
-                                            <form class="form form-horizontal"
-                                                action="{{ route('backsite.specialists.store') }}" method="POST"
-                                                enctype="multipart/form-data">
+                                            <form class="form form-horizontal" action="{{ route('backsite.users.store') }}"
+                                                method="POST" enctype="multipart/form-data">
 
                                                 @csrf
 
@@ -83,7 +81,7 @@
                                                                 style="color:red;">required</code></label>
                                                         <div class="col-md-9 mx-auto">
                                                             <input type="text" id="name" name="name"
-                                                                class="form-control" placeholder="example dentist dermatology"
+                                                                class="form-control" placeholder="example John Doe or Jane"
                                                                 value="{{ old('name') }}" autocomplete="off" required>
 
                                                             @if ($errors->has('name'))
@@ -94,18 +92,98 @@
                                                     </div>
 
                                                     <div class="form-group row">
-                                                        <label class="col-md-3 label-control" for="price">Price <code
+                                                        <label class="col-md-3 label-control" for="email">Email <code
                                                                 style="color:red;">required</code></label>
                                                         <div class="col-md-9 mx-auto">
-                                                            <input type="text" id="price" name="price"
-                                                                class="form-control" placeholder="example price 10000"
-                                                                value="{{ old('price') }}" autocomplete="off"
-                                                                data-inputmask="'alias': 'numeric', 'groupSeparator': ',', 'autoGroup': true, 'digits': 0, 'digitsOptional': 0, 'prefix': 'IDR ', 'placeholder': '0'"
-                                                                required>
+                                                            <input type="text" id="email" name="email"
+                                                                class="form-control"
+                                                                placeholder="example People@mail.com or Human@mail.com"
+                                                                value="{{ old('email') }}" autocomplete="off"
+                                                                data-inputmask="'alias': 'email'" required>
 
-                                                            @if ($errors->has('price'))
+                                                            @if ($errors->has('email'))
                                                                 <p style="font-style: bold; color: red;">
-                                                                    {{ $errors->first('price') }}</p>
+                                                                    {{ $errors->first('email') }}</p>
+                                                            @endif
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="form-group row">
+                                                        <label class="col-md-3 label-control" for="password">Password <code
+                                                                style="color:red;">required</code></label>
+                                                        <div class="col-md-9 mx-auto">
+                                                            <input type="password" id="password" name="password"
+                                                                class="form-control" placeholder="type your password"
+                                                                value="{{ old('password') }}" autocomplete="off" required>
+
+                                                            @if ($errors->has('password'))
+                                                                <p style="font-style: bold; color: red;">
+                                                                    {{ $errors->first('password') }}</p>
+                                                            @endif
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="form-group row">
+                                                        <label class="col-md-3 label-control"
+                                                            for="password_confirmation">Password Confirmation<code
+                                                                style="color:red;">required</code></label>
+                                                        <div class="col-md-9 mx-auto">
+                                                            <input type="password" id="password_confirmation"
+                                                                name="password_confirmation" class="form-control"
+                                                                placeholder="type your password again" autocomplete="off"
+                                                                required>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="form-group row {{ $errors->has('roles') ? 'has-error' : '' }}">
+                                                        <label class="col-md-3 label-control">Roles<code
+                                                                style="color:red;">required</code></label>
+                                                        <div class="col-md-9 mx-auto">
+                                                            <label for="role">
+                                                                <span
+                                                                    class="btn btn-warning btn-sm select-all">{{ 'Select all' }}</span>
+                                                                <span
+                                                                    class="btn btn-warning btn-sm deselect-all">{{ 'Delete all' }}</span>
+                                                            </label>
+
+                                                            <select name="roles[]" id="role"
+                                                                class="form-control select2-full-bg" data-bgcolor="teal"
+                                                                data-bgcolor-variation="lighten-3" data-text-color="black"
+                                                                multiple="multiple" required>
+                                                                @foreach ($roles as $id => $role)
+                                                                    <option value="{{ $role->id }}"
+                                                                        {{ in_array($role->id, old('roles', [])) ? 'selected' : '' }}>
+                                                                        {{ $role->name }}</option>
+                                                                @endforeach
+                                                            </select>
+
+                                                            @if ($errors->has('roles'))
+                                                                <p style="font-style: bold; color: red;">
+                                                                    {{ $errors->first('roles') }}</p>
+                                                            @endif
+                                                        </div>
+                                                    </div>
+
+                                                    <div
+                                                        class="form-group row {{ $errors->has('type_user_id') ? 'has-error' : '' }}">
+                                                        <label class="col-md-3 label-control" for="type_user_id">Type User
+                                                            <code style="color:red;">required</code></label>
+                                                        <div class="col-md-9 mx-auto">
+                                                            <select name="type_user_id" id="type_user_id"
+                                                                class="form-control select2" required>
+                                                                <option value="{{ '' }}" disabled selected>Choose
+                                                                </option>
+                                                                @foreach ($type_users as $key => $type_users_item)
+                                                                    <option value="{{ $type_users_item->id }}"
+                                                                        {{ old('type_user_id') == $type_users_item->id ? 'selected' : '' }}>
+                                                                        {{ $type_users_item->name }}
+                                                                    </option>
+                                                                @endforeach
+                                                            </select>
+
+                                                            @if ($errors->has('type_user_id'))
+                                                                <p style="font-style: bold; color: red;">
+                                                                    {{ $errors->first('type_user_id') }}</p>
                                                             @endif
                                                         </div>
                                                     </div>
@@ -119,7 +197,6 @@
                                                     </button>
                                                 </div>
                                             </form>
-
                                         </div>
                                     </div>
                                 </div>
@@ -131,7 +208,7 @@
             @endcan
 
             {{-- table card --}}
-            @can('specialist_table')
+            @can('user_table')
                 <div class="content-body">
                     <section id="table-home">
                         <!-- Zero configuration table -->
@@ -139,7 +216,7 @@
                             <div class="col-12">
                                 <div class="card">
                                     <div class="card-header">
-                                        <h4 class="card-title">Specialists List</h4>
+                                        <h4 class="card-title">Users List</h4>
                                         <a class="heading-elements-toggle"><i class="la la-ellipsis-v font-medium-3"></i></a>
                                         <div class="heading-elements">
                                             <ul class="list-inline mb-0">
@@ -160,17 +237,28 @@
                                                         <tr>
                                                             <th>Date</th>
                                                             <th>Name</th>
-                                                            <th>Price</th>
+                                                            <th>Email</th>
+                                                            <th>Role</th>
+                                                            <th>Type</th>
                                                             <th style="text-align:center; width:150px;">Action</th>
                                                         </tr>
                                                     </thead>
                                                     <tbody>
-                                                        @forelse($specialists as $key => $specialists_item)
-                                                            <tr data-entry-id="{{ $specialists_item->id }}">
-                                                                <td>{{ isset($specialists_item->created_at) ? date('d/m/Y H:i:s', strtotime($specialists_item->created_at)) : '' }}
+                                                        @forelse($users as $key => $users_item)
+                                                            <tr data-entry-id="{{ $users_item->id }}">
+                                                                <td>{{ date('d/m/Y H:i:s', strtotime($users_item->created_at)) ?? '' }}
                                                                 </td>
-                                                                <td>{{ $specialists_item->name ?? '' }}</td>
-                                                                <td>{{ 'IDR ' . number_format($specialists_item->price) ?? '' }}
+                                                                <td>{{ $users_item->name ?? '' }}</td>
+                                                                <td>{{ $users_item->email ?? '' }}</td>
+                                                                <td style="width:200px;">
+                                                                    @foreach ($users_item->roles as $key => $item)
+                                                                        <span
+                                                                            class="badge bg-yellow text-dark mr-1 mb-1">{{ $item->name }}</span>
+                                                                    @endforeach
+                                                                </td>
+                                                                <td style="width:200px;">
+                                                                    <span
+                                                                        class="badge bg-success mr-1 mb-1">{{ $users_item->detail_user->type_user->name ?? '' }}</span>
                                                                 </td>
                                                                 <td class="text-center">
 
@@ -180,27 +268,24 @@
                                                                             data-toggle="dropdown" aria-haspopup="true"
                                                                             aria-expanded="false">Action</button>
                                                                         <div class="dropdown-menu">
-
-                                                                            @can('specialist_show')
+                                                                            @can('user_show')
                                                                                 <a href="#mymodal"
-                                                                                    data-remote="{{ route('backsite.specialists.show', $specialists_item->id) }}"
+                                                                                    data-remote="{{ route('backsite.users.show', $users_item->id) }}"
                                                                                     data-toggle="modal" data-target="#mymodal"
-                                                                                    data-title="Specialists Detail"
+                                                                                    data-title="Users Detail"
                                                                                     class="dropdown-item">
                                                                                     Show
                                                                                 </a>
                                                                             @endcan
-
-                                                                            @can('specialist_edit')
+                                                                            @can('user_edit')
                                                                                 <a class="dropdown-item"
-                                                                                    href="{{ route('backsite.specialists.edit', $specialists_item->id) }}">
+                                                                                    href="{{ route('backsite.users.edit', $users_item->id) }}">
                                                                                     Edit
                                                                                 </a>
                                                                             @endcan
-
-                                                                            @can('specialist_delete')
+                                                                            @can('user_delete')
                                                                                 <form
-                                                                                    action="{{ route('backsite.specialists.destroy', $specialists_item->id) }}"
+                                                                                    action="{{ route('backsite.users.destroy', $users_item->id) }}"
                                                                                     method="POST"
                                                                                     onsubmit="return confirm('Are you sure want to delete this data ?');">
                                                                                     <input type="hidden" name="_method"
@@ -211,9 +296,9 @@
                                                                                         value="Delete">
                                                                                 </form>
                                                                             @endcan
-
                                                                         </div>
                                                                     </div>
+
                                                                 </td>
                                                             </tr>
                                                         @empty
@@ -224,7 +309,9 @@
                                                         <tr>
                                                             <th>Date</th>
                                                             <th>Name</th>
-                                                            <th>Price</th>
+                                                            <th>Email</th>
+                                                            <th>Role</th>
+                                                            <th>Type</th>
                                                             <th style="text-align:center; width:150px;">Action</th>
                                                         </tr>
                                                     </tfoot>

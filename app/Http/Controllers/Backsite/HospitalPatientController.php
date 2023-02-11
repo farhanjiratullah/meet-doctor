@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
+use Gate;
 
 class HospitalPatientController extends Controller
 {
@@ -16,6 +17,8 @@ class HospitalPatientController extends Controller
      */
     public function index(): View
     {
+        abort_if(Gate::denies('hospital_patient_access'), 403);
+
         $patients = User::whereHas('detail_user', function($query) {
             $query->where('type_user_id', 3);
         })->orderBy('created_at', 'desc')->get();

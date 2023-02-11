@@ -6,8 +6,9 @@ use App\Http\Controllers\Controller;
 use App\Models\ConfigPayment;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
-use App\Http\Requests\Doctor\UpdateConfigPaymentRequest;
+use App\Http\Requests\ConfigPayment\UpdateConfigPaymentRequest;
 use Illuminate\Http\RedirectResponse;
+use Gate;
 
 class ConfigPaymentController extends Controller
 {
@@ -18,6 +19,8 @@ class ConfigPaymentController extends Controller
      */
     public function index(): View
     {
+        abort_if(Gate::denies('config_payment_access'), 403);
+
         $config_payment = ConfigPayment::first();
 
         return view('pages.backsite.master-datas.config-payment.index', [
@@ -65,8 +68,10 @@ class ConfigPaymentController extends Controller
      */
     public function edit(ConfigPayment $configPayment): View
     {
+        abort_if(Gate::denies('config_payment_edit'), 403);
+
         return view('pages.backsite.master-datas.config-payment.edit',[
-            'confi$configPayment' => $configPayment
+            'configPayment' => $configPayment
         ]);
     }
 

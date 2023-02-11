@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Appointment;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
+use Gate;
 
 class AppointmentController extends Controller
 {
@@ -16,7 +17,9 @@ class AppointmentController extends Controller
      */
     public function index(): View
     {
-        $appointments = Appointment::orderBy('created_at', 'desc')->get();
+        abort_if(Gate::denies('appointment_access'), 403);
+
+        $appointments = Appointment::with(['doctor', 'user', 'consultation'])->orderBy('created_at', 'desc')->get();
 
         return view('pages.backsite.operationals.appointments.index', [
             'appointments' => $appointments

@@ -9,6 +9,7 @@ use Illuminate\View\View;
 use App\Http\Requests\Specialist\StoreSpecialistRequest;
 use App\Http\Requests\Specialist\UpdateSpecialistRequest;
 use Illuminate\Http\RedirectResponse;
+use Gate;
 
 class SpecialistController extends Controller
 {
@@ -19,6 +20,8 @@ class SpecialistController extends Controller
      */
     public function index(): View
     {
+        abort_if(Gate::denies('specialist_access'), 403);
+
         $specialists = Specialist::orderBy('created_at', 'desc')->get();
 
         return view('pages.backsite.master-datas.specialists.index', [
@@ -59,6 +62,8 @@ class SpecialistController extends Controller
      */
     public function show(Specialist $specialist): View
     {
+        abort_if(Gate::denies('specialist_show'), 403);
+
         return view('pages.backsite.master-datas.specialists.show', [
             'specialist' => $specialist
         ]);
@@ -72,6 +77,8 @@ class SpecialistController extends Controller
      */
     public function edit(Specialist $specialist): View
     {
+        abort_if(Gate::denies('specialist_edit'), 403);
+
         return view('pages.backsite.master-datas.specialists.edit', [
             'specialist' => $specialist
         ]);
@@ -101,6 +108,8 @@ class SpecialistController extends Controller
      */
     public function destroy(Specialist $specialist): RedirectResponse
     {
+        abort_if(Gate::denies('specialist_delete'), 403);
+
         $specialist->delete();
 
         alert('Success', 'Specialist deleted successfully');

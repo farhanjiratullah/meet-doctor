@@ -9,6 +9,7 @@ use Illuminate\View\View;
 use App\Http\Requests\Consultation\StoreConsultationRequest;
 use App\Http\Requests\Consultation\UpdateConsultationRequest;
 use Illuminate\Http\RedirectResponse;
+use Gate;
 
 class ConsultationController extends Controller
 {
@@ -19,6 +20,8 @@ class ConsultationController extends Controller
      */
     public function index(): View
     {
+        abort_if(Gate::denies('consultation_access'), 403);
+
         $consultations = Consultation::orderBy('created_at', 'desc')->get();
 
         return view('pages.backsite.master-datas.consultations.index', [
@@ -59,6 +62,8 @@ class ConsultationController extends Controller
      */
     public function show(Consultation $consultation): View
     {
+        abort_if(Gate::denies('consultation_show'), 403);
+
         return view('pages.backsite.master-datas.consultations.show', [
             'consultation' => $consultation
         ]);
@@ -72,6 +77,8 @@ class ConsultationController extends Controller
      */
     public function edit(Consultation $consultation): View
     {
+        abort_if(Gate::denies('consultation_edit'), 403);
+
         return view('pages.backsite.master-datas.consultations.edit', [
             'consultation' => $consultation
         ]);
@@ -101,6 +108,8 @@ class ConsultationController extends Controller
      */
     public function destroy(Consultation $consultation): RedirectResponse
     {
+        abort_if(Gate::denies('consultation_delete'), 403);
+
         $consultation->delete();
 
         alert('Success', 'consultation deleted successfully');

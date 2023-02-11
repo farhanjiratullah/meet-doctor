@@ -10,7 +10,8 @@ use App\Http\Requests\Doctor\StoreDoctorRequest;
 use App\Http\Requests\Doctor\UpdateDoctorRequest;
 use App\Models\Specialist;
 use Illuminate\Http\RedirectResponse;
-use Illuminate\Support\Facades\Gate;
+use Gate;
+use File;
 
 class DoctorController extends Controller
 {
@@ -23,8 +24,8 @@ class DoctorController extends Controller
     {
         abort_if(Gate::denies('doctor_access'), 403);
 
-        $doctors = Doctor::orderBy('created_at', 'desc')->get();
-        $specialists = Specialist::pluck('name', 'id');
+        $doctors = Doctor::with('specialist')->orderBy('created_at', 'desc')->get();
+        $specialists = Specialist::all();
 
         return view('pages.backsite.operationals.doctors.index', [
             'doctors' => $doctors,
@@ -50,7 +51,13 @@ class DoctorController extends Controller
      */
     public function store(StoreDoctorRequest $request): RedirectResponse
     {
-        Doctor::create($request->validated());
+        $data = $request->validated();
+        
+        if( $request->hasFile('photo') ) {
+            $data['photo'] = $request->file('photo')->store('assets/doctors', 'public');
+        }
+
+        Doctor::create($data);
 
         alert()->success('Success', 'New Doctor has been created');
 
@@ -82,7 +89,7 @@ class DoctorController extends Controller
     {
         abort_if(Gate::denies('doctor_edit'), 403);
 
-        $specialists = Specialist::pluck('name', 'id');
+        $specialists = Specialist::all();
 
         return view('pages.backsite.operationals.doctors.edit', [
             'doctor' => $doctor,
@@ -99,7 +106,19 @@ class DoctorController extends Controller
      */
     public function update(UpdateDoctorRequest $request, Doctor $doctor): RedirectResponse
     {
-        $doctor->update($request->validated());
+        $data = $request->validated();
+        
+        if( $request->hasFile('photo') ) {
+            $old_file = "storage/{$doctor->photo}";
+
+            if( File::exists(public_path($old_file)) ) {
+                File::delete($old_file);
+            }
+            
+            $data['photo'] = $request->file('photo')->store('assets/doctors', 'public');
+        }
+
+        $doctor->update($data);
 
         alert('Success', 'Doctor updated successfully');
 

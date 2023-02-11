@@ -2,16 +2,19 @@
 
 use App\Http\Controllers\Backsite\ConfigPaymentController;
 use App\Http\Controllers\Backsite\ConsultationController;
-use App\Http\Controllers\Frontsite\AppointmentController;
+use App\Http\Controllers\Frontsite\AppointmentController as FrontsiteAppointmentController;
 use App\Http\Controllers\Frontsite\LandingController;
 use App\Http\Controllers\Frontsite\PaymentController;
 use App\Http\Controllers\Backsite\DashboardController;
 use App\Http\Controllers\Backsite\DoctorController;
+use App\Http\Controllers\Backsite\HospitalPatientController;
 use App\Http\Controllers\Backsite\PermissionController;
 use App\Http\Controllers\Backsite\RoleController;
+use App\Http\Controllers\Backsite\AppointmentController as BacksiteAppointmentController;
 use App\Http\Controllers\Backsite\TypeUserController;
 use App\Http\Controllers\Backsite\SpecialistController;
 use App\Http\Controllers\Backsite\TransactionController;
+use App\Http\Controllers\Backsite\UserController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -27,7 +30,7 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', LandingController::class)->name('landing');
 Route::middleware('auth')->group(function() {
-    Route::get('/appointment', AppointmentController::class)->name('appointment'); 
+    Route::get('/appointment', FrontsiteAppointmentController::class)->name('appointment'); 
     Route::get('/payment', PaymentController::class)->name('payment'); 
 });
 
@@ -42,7 +45,8 @@ Route::middleware([
     Route::resource('/consultations', ConsultationController::class)->except('create');
     Route::resource('/permissions', PermissionController::class)->only('index');
     Route::resource('/roles', RoleController::class)->except('create');
-    Route::resource('/appointments', AppointmentController::class)->only('index');
+    Route::resource('/appointments', BacksiteAppointmentController::class)->only('index');
     Route::resource('/transactions', TransactionController::class)->only('index');
-    Route::resource('/hospital-patients', TransactionController::class)->only('index');
+    Route::resource('/hospital-patients', HospitalPatientController::class)->only('index');
+    Route::resource('/users', UserController::class)->except('create');
 });

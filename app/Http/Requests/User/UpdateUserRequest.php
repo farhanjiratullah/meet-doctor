@@ -3,6 +3,8 @@
 namespace App\Http\Requests\User;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Gate;
+use Illuminate\Validation\Rule;
 
 class UpdateUserRequest extends FormRequest
 {
@@ -13,6 +15,8 @@ class UpdateUserRequest extends FormRequest
      */
     public function authorize()
     {
+        abort_if(Gate::denies('user_edit'), 403);
+
         return true;
     }
 
@@ -25,8 +29,15 @@ class UpdateUserRequest extends FormRequest
     {
         return [
             'name' => 'required|string|max:255',
-            'email' => 'required|email|unique:users,email,id|max:255',
-            'password' => 'required|string|max:255',
+            'email' => [
+                'required',
+                'email',
+                'max:255',
+                Rule::unique('users')->ignore($this->user)
+            ],
+            'roles' => 'required|array',
+            'roles.*' => 'integer',
+            'type_user_id' => 'required|integer|exists:type_users,id'
         ];
     }
 }

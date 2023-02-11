@@ -10,6 +10,7 @@ use App\Http\Requests\Role\StoreRoleRequest;
 use App\Http\Requests\Role\UpdateRoleRequest;
 use App\Models\Permission;
 use Illuminate\Http\RedirectResponse;
+use Gate;
 
 class RoleController extends Controller
 {
@@ -20,6 +21,8 @@ class RoleController extends Controller
      */
     public function index(): View
     {
+        abort_if(Gate::denies('role_access'), 403);
+
         $roles = Role::orderBy('created_at', 'desc')->get();
 
         return view('pages.backsite.management-accesses.roles.index', [
@@ -60,6 +63,8 @@ class RoleController extends Controller
      */
     public function show(Role $role): View
     {
+        abort_if(Gate::denies('role_show'), 403);
+
         $role->load('permissions');
 
         return view('pages.backsite.management-accesses.roles.show', [
@@ -75,8 +80,10 @@ class RoleController extends Controller
      */
     public function edit(Role $role): View
     {
+        abort_if(Gate::denies('role_edit'), 403);
+
         $role->load('permissions');
-        $permissions = Permission::pluck('name', 'id');
+        $permissions = Permission::all();
 
         return view('pages.backsite.management-accesses.roles.edit', [
             'role' => $role,
@@ -93,6 +100,7 @@ class RoleController extends Controller
      */
     public function update(UpdateRoleRequest $request, Role $role): RedirectResponse
     {
+        
         $role->update($request->validated());
         $role->permissions()->sync($request->permissions);
 
@@ -109,6 +117,8 @@ class RoleController extends Controller
      */
     public function destroy(Role $role): RedirectResponse
     {
+        abort_if(Gate::denies('role_delete'), 403);
+
         $role->delete();
 
         alert('Success', 'Eole deleted successfully');

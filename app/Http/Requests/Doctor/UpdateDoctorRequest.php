@@ -3,7 +3,7 @@
 namespace App\Http\Requests\Doctor;
 
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Support\Facades\Gate;
+use Gate;
 
 class UpdateDoctorRequest extends FormRequest
 {
@@ -30,7 +30,7 @@ class UpdateDoctorRequest extends FormRequest
             'name' => 'required|string|max:255',
             'specialist_id' => 'required|exists:specialists,id',
             'fee' => 'required|string|max:255',
-            'photo' => 'required|string|max:255',
+            'photo' => 'nullable|mimes:jpeg,jpg,svg,png|max:10240',
         ];
     }
 }

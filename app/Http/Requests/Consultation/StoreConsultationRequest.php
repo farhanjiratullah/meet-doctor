@@ -3,6 +3,7 @@
 namespace App\Http\Requests\Consultation;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Gate;
 
 class StoreConsultationRequest extends FormRequest
 {
@@ -13,6 +14,8 @@ class StoreConsultationRequest extends FormRequest
      */
     public function authorize()
     {
+        abort_if(Gate::denies('consultation_create'), 403);
+
         return true;
     }
 
