@@ -144,4 +144,7 @@ return [
         ]),
     ],
 
+    // 'redirects' => [
+    //     'register' => '/register/success'
+    // ]
 ];

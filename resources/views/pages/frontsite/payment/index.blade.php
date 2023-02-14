@@ -11,20 +11,20 @@
                 <!-- Doctor Information -->
                 <div class="flex flex-wrap items-center space-x-5">
                     <div class="flex-shrink-0">
-                        <img src="{{ asset('assets/frontsite/images/doctor-1.png') }}"
+                        <img src="{{ Storage::url($appointment->doctor->photo) }}"
                             class="w-20 h-20 rounded-full bg-center object-cover object-top" alt="Doctor 1" />
                     </div>
 
                     <div class="flex-1 space-y-1">
                         <div class="text-[#1E2B4F] text-lg font-semibold">
-                            Dr. Galih Pratama
+                            {{ $appointment->doctor->name }}
                         </div>
-                        <div class="text-[#AFAEC3]">Cardiologist</div>
+                        <div class="text-[#AFAEC3]">{{ $appointment->doctor->specialist->name }}</div>
 
                         <!--
-                        Icon when mobile is show.
-                        star icon mobile: "flex/show", star icon dekstop: "hidden"
-                      -->
+                                                            Icon when mobile is show.
+                                                            star icon mobile: "flex/show", star icon dekstop: "hidden"
+                                                          -->
                         <div class="lg:hidden flex items-center gap-x-2">
                             <div class="flex items-center gap-2">
                                 <svg width="20" height="19" viewBox="0 0 20 19" fill="none"
@@ -67,9 +67,9 @@
                     </div>
 
                     <!--
-                        Icon when desktop is show.
-                        star icon mobile: "hidden", star icon dekstop: "flex/show"
-                    -->
+                                                            Icon when desktop is show.
+                                                            star icon mobile: "hidden", star icon dekstop: "flex/show"
+                                                        -->
                     <div class="hidden lg:flex items-center gap-x-2">
                         <div class="flex items-center gap-2">
                             <svg width="20" height="19" viewBox="0 0 20 19" fill="none"
@@ -116,27 +116,47 @@
                     <h5 class="text-[#1E2B4F] text-lg font-semibold">Appointment</h5>
                     <div class="flex items-center justify-between mt-5">
                         <div class="text-[#AFAEC3] font-medium">Kebutuhan konsultasi</div>
-                        <div class="text-[#1E2B4F] font-medium">Jantung sesak</div>
+                        <div class="text-[#1E2B4F] font-medium">{{ $appointment->consultation->name }}</div>
                     </div>
 
                     <div class="flex items-center justify-between mt-5">
                         <div class="text-[#AFAEC3] font-medium">Level</div>
-                        <div class="text-[#1E2B4F] font-medium">Medium</div>
+                        <div class="text-[#1E2B4F] font-medium">
+                            @if ($appointment->level == 1)
+                                {{ 'Low' }}
+                            @elseif ($appointment->level == 2)
+                                {{ 'Medium' }}
+                            @elseif ($appointment->level == 3)
+                                {{ 'High' }}
+                            @else
+                                {{ 'N/A' }}
+                            @endif
+                        </div>
                     </div>
 
                     <div class="flex items-center justify-between mt-5">
                         <div class="text-[#AFAEC3] font-medium">Dijadwalkan pada</div>
-                        <div class="text-[#1E2B4F] font-medium">12 Januari 2022</div>
+                        <div class="text-[#1E2B4F] font-medium">
+                            {{ \Carbon\Carbon::parse($appointment->date)->format('d F Y') }}</div>
                     </div>
 
                     <div class="flex items-center justify-between mt-5">
                         <div class="text-[#AFAEC3] font-medium">Waktu</div>
-                        <div class="text-[#1E2B4F] font-medium">15:30 PM</div>
+                        <div class="text-[#1E2B4F] font-medium">
+                            {{ \Carbon\Carbon::parse($appointment->time)->format('H:i') }}</div>
                     </div>
 
                     <div class="flex items-center justify-between mt-5">
                         <div class="text-[#AFAEC3] font-medium">Status</div>
-                        <div class="text-[#1E2B4F] font-medium">Waiting for Payment</div>
+                        <div class="text-[#1E2B4F] font-medium">
+                            @if ($appointment->status == 1)
+                                {{ 'Payment Completed' }}
+                            @elseif ($appointment->status == 2)
+                                {{ 'Waiting Payment' }}
+                            @else
+                                {{ 'N/A' }}
+                            @endif
+                        </div>
                     </div>
                 </div>
 
@@ -147,27 +167,30 @@
                     </h5>
                     <div class="flex items-center justify-between mt-5">
                         <div class="text-[#AFAEC3] font-medium">Biaya konsultasi</div>
-                        <div class="text-[#1E2B4F] font-medium">$5,000</div>
+                        <div class="text-[#1E2B4F] font-medium">
+                            {{ 'IDR ' . number_format($appointment->doctor->specialist->price) ?? '' }}</div>
                     </div>
 
                     <div class="flex items-center justify-between mt-5">
                         <div class="text-[#AFAEC3] font-medium">Fee dokter</div>
-                        <div class="text-[#1E2B4F] font-medium">$200</div>
+                        <div class="text-[#1E2B4F] font-medium">
+                            {{ 'IDR ' . number_format($appointment->doctor->fee) ?? '' }}</div>
                     </div>
 
                     <div class="flex items-center justify-between mt-5">
                         <div class="text-[#AFAEC3] font-medium">Fee hospital</div>
-                        <div class="text-[#1E2B4F] font-medium">$10</div>
+                        <div class="text-[#1E2B4F] font-medium">{{ 'IDR ' . number_format($config_payment->fee) ?? '' }}
+                        </div>
                     </div>
 
                     <div class="flex items-center justify-between mt-5">
-                        <div class="text-[#AFAEC3] font-medium">VAT 20%</div>
-                        <div class="text-[#1E2B4F] font-medium">$372</div>
+                        <div class="text-[#AFAEC3] font-medium">VAT {{ $config_payment->vat ?? '' }}%</div>
+                        <div class="text-[#1E2B4F] font-medium">{{ 'IDR ' . number_format($total_with_vat) ?? '' }}</div>
                     </div>
 
                     <div class="flex items-center justify-between mt-5">
                         <div class="text-[#AFAEC3] font-medium">Grand total</div>
-                        <div class="text-[#2AB49B] font-semibold">$6,500</div>
+                        <div class="text-[#2AB49B] font-semibold">{{ 'IDR ' . number_format($grand_total) ?? '' }}</div>
                     </div>
                 </div>
             </div>
@@ -178,7 +201,38 @@
                     Choose Your <br />
                     Payment Method
                 </h3>
-                <form action="" x-data="{ payment: '' }" class="mt-8">
+
+                {{-- error --}}
+                @if ($errors->any())
+                    <div class="alert bg-danger alert-dismissible mb-2" role="alert">
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+
+                        <ul>
+                            @foreach ($errors->all() as $error)
+                                <li>{{ $error }}</li>
+                            @endforeach
+                        </ul>
+                    </div>
+                @endif
+
+                <form action="{{ route('payment.store', $appointment->id) }}" x-data="{ payment: '' }" class="mt-8"
+                    method="post">
+                    @csrf
+
+                    @php
+                        $sub_total = $appointment->doctor->fee + $appointment->doctor->specialist->price + $appointment->doctor->specialist->price;
+                    @endphp
+
+                    <input type="hidden" name="appointment_id" value="{{ $appointment->id }}">
+                    <input type="hidden" name="fee_doctor" value="{{ $appointment->doctor->fee }}">
+                    <input type="hidden" name="fee_specialist" value="{{ $appointment->doctor->specialist->price }}">
+                    <input type="hidden" name="fee_hospital" value="{{ $config_payment->fee }}">
+                    <input type="hidden" name="sub_total" value="{{ $sub_total }}">
+                    <input type="hidden" name="vat" value="{{ (int) $total_with_vat }}">
+                    <input type="hidden" name="total" value="{{ (int) $grand_total }}">
+
                     <!-- List Payment -->
                     <div class="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-2 gap-5">
                         <div class="relative">
@@ -229,20 +283,20 @@
 
                     <div class="mt-10 grid">
                         <!--
-                        button when payment is filled.
-                      -->
-                        <a href="booking-success.html" class="bg-[#0D63F3] text-white px-10 py-3 rounded-full text-center"
+                                                            button when payment is filled.
+                                                          -->
+                        <button type="submit" class="bg-[#0D63F3] text-white px-10 py-3 rounded-full text-center"
                             x-show="payment.length">
                             Pay Now
-                        </a>
+                            </a>
 
-                        <!--
-                        button when payment is empty.
-                      -->
-                        <span x-show="!payment.length"
-                            class="bg-[#C0CADA] text-[#808997] cursor-not-allowed px-10 py-3 rounded-full text-center">
-                            Pay Now
-                        </span>
+                            <!--
+                                                            button when payment is empty.
+                                                          -->
+                            <span x-show="!payment.length"
+                                class="bg-[#C0CADA] text-[#808997] cursor-not-allowed px-10 py-3 rounded-full text-center">
+                                Pay Now
+                            </span>
                     </div>
                 </form>
             </div>
